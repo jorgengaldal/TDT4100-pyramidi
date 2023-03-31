@@ -1,0 +1,25 @@
+@startuml Klassediagram for plan
+
+class Song implements Playable
+
+interface Playable
+
+' abstract class PlayableContainer implements Playable
+
+' class Album extends PlayableContainer
+
+class PyramidLayer {
+    ' extends PlayableContainer?
+    List<Playable> layers
+}
+
+class Pyramid {
+    List<PyramidLayer> contents
+
+    Song getNextSong()
+}
+
+Pyramid --> PyramidLayer : "layers"
+PyramidLayer --> Song : "contents"
+
+@enduml
