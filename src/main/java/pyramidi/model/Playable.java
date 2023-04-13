@@ -6,7 +6,11 @@ public interface Playable {
     /**
      * Metode for å spille av sangen.
      * 
-     * @apiNote Foreløpig ikke implementert.
+     * @apiNote Foreløpig ikke implementert skikkelig.
      */
     public void play();
+
+    public double getDuration();
+
+    public String getTitle();
 }

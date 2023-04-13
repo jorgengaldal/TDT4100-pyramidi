@@ -4,22 +4,34 @@ class Song implements Playable
 
 interface Playable
 
+interface PlayableContainer
+
 ' abstract class PlayableContainer implements Playable
 
 ' class Album extends PlayableContainer
 
 class PyramidLayer {
     ' extends PlayableContainer?
-    List<Playable> layers
+    List<Playable> contents
 }
 
-class Pyramid {
-    List<PyramidLayer> contents
+class Pyramid implements PlayableContainer {
+    List<PyramidLayer> layers
 
     Song getNextSong()
 }
 
+class Player {
+    Playable currentPlayable
+    
+
+    void next()
+}
+
 Pyramid --> PyramidLayer : "layers"
-PyramidLayer --> Song : "contents"
+PyramidLayer --> Playable : "contents"
+Player --> Playable : "currentPlayable"
+Player --> PlayableContainer : "currentPlayableContainer"
+
 
 @enduml
