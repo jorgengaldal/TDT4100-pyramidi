@@ -50,9 +50,7 @@ public class PyramidLayer implements Iterable<Playable> {
 
     @Override
     public Iterator<Playable> iterator() {
-        // TODO Returner PyramidLayerPlayableIterator
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        return new PyramidLayerPlayableIterator(this);
     }
     
 }

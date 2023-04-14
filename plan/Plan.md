@@ -157,6 +157,20 @@ Brukes for å iterere gjennom `PyramidLayer` sine `Playable`, for eksempel (og s
 Brukes for å iterere gjennom `Pyramid` sine `PyramidLayer` sine `Playable`, for eksempel (og spesielt) i `Player`.
 
 Bruker flere `PyramidLayerIterator` for å iterere gjennom basert på `Pyramid` sine `PyramidLayer` sine vekter. 
+
+##### Beskrivelse av algoritme
+
+Bruker en TreeMap for (threshold t, weight w) og en HashMap for (weight w, PyramidLayerPlayableIterator i)
+
+1. Lager en liste av vektene (for å fryse rekkefølgen)
+1. Går gjennom alle vektene i listen:
+    1. Gi hver vekt et intervall fra forriges siste til forriges siste + egenvekt. 
+1. For hver trekking:
+    1. Velg et tilfeldig tall r fra 0 til totalvekt.
+    1. Velger fra iterator til det nivået, hvis interval ble truffet. Ved å:
+        1. For alle øvre grenser g:
+            1. Hvis tallet r er mindre enn g, velg denne.
+
 #
 
 #### PyramidLayerIterator (Class)

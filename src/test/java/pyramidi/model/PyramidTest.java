@@ -1,11 +1,11 @@
 package pyramidi.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +30,13 @@ public class PyramidTest {
         pyramid.addPlayable(phadThai);
         pyramid.addPlayable(detErJoBareKodd);
     
+    }
+
+    @Test
+    public void testConstructorWithZeroBaseWeight() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Pyramid(0);
+        });
     }
 
     @Test

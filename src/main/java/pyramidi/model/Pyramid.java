@@ -10,27 +10,27 @@ import java.util.Map;
 
 public class Pyramid implements PlayableContainer {
 
-    /* TODO: Legg til mulighet for å enkelt endre vekt til et lag uten å måtte lage et nytt.
-     * 
+    /* TODO: Legg til mulighet for å enkelt endre vekt til et lag uten å måtte lage et nytt
+     * TODO: Bytt over til TreeMap for å unngå å måtte sortere så weights så mange ganger
      */
 
     private Map<Integer, PyramidLayer> layers;
 
     public Pyramid(int baseLayerWeight) {
         layers = new HashMap<>();
-        // TODO Bytt over til TreeMap for å unngå å måtte sortere så weights så mange
-        // ganger.
-        PyramidLayer baseLayer = new PyramidLayer();
-        layers.put(baseLayerWeight, baseLayer);
+        addLayer(baseLayerWeight);
     }
 
     public Pyramid() {
-        this(0);
+        this(1);
     }
 
     public void addLayer(int weight) {
         if (layers.keySet().stream().anyMatch((a) -> a == weight)) {
             throw new IllegalArgumentException("There is already a layer with weight " + weight);
+        }
+        if (weight < 1) {
+            throw new IllegalArgumentException("Layer weight must be 1 or above");
         }
 
         PyramidLayer layer = new PyramidLayer();
@@ -123,9 +123,7 @@ public class Pyramid implements PlayableContainer {
 
     @Override
     public Iterator<Playable> iterator() {
-        // TODO Skal returnere PyramidIterator
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        return new PyramidPlayableIterator(this);
     }
 
     @Override

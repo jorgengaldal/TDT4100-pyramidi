@@ -111,6 +111,11 @@ public class Song implements Playable {
     } 
 
     @Override
+    public String toString() {
+        return getTitle() + " (" + getDisplayedDuration() + ")" + " - " + getDisplayedAlbum() + " - " + getDisplayedArtist();
+    }
+
+    @Override
     public void play() {
         System.out.println("Playing " + this.getTitle());
     }
