@@ -18,6 +18,7 @@ public class pyramidiApp extends Application {
         primaryStage.setTitle("pyramidi");
         primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("App.fxml"))));
         primaryStage.show();
+        System.out.println("Window opened");
     }
 
 }
