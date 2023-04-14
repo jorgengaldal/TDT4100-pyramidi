@@ -21,6 +21,11 @@ public class PyramidPlayableIterator implements Iterator<Playable> {
     private Random random;
     private int upperRandomBound;
 
+    /**
+     * OBS! Merk at denne ikke er lagt for å iterere over en {@code Pyramid} som endrer seg
+     * 
+     * @param pyramid
+     */
     public PyramidPlayableIterator(Pyramid pyramid) {
         this.pyramid = pyramid;
         this.intervals = new TreeMap<>();

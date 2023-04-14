@@ -17,4 +17,5 @@ public interface Playable {
     public String getTitle();
 
     public String getDisplayedArtist();
+
 }
