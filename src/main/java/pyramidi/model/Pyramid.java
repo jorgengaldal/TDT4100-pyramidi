@@ -2,6 +2,7 @@ package pyramidi.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,10 +10,16 @@ import java.util.Map;
 
 public class Pyramid implements PlayableContainer {
 
+    /* TODO: Legg til mulighet for å enkelt endre vekt til et lag uten å måtte lage et nytt.
+     * 
+     */
+
     private Map<Integer, PyramidLayer> layers;
 
     public Pyramid(int baseLayerWeight) {
         layers = new HashMap<>();
+        // TODO Bytt over til TreeMap for å unngå å måtte sortere så weights så mange
+        // ganger.
         PyramidLayer baseLayer = new PyramidLayer();
         layers.put(baseLayerWeight, baseLayer);
     }
@@ -21,7 +28,6 @@ public class Pyramid implements PlayableContainer {
         this(0);
     }
 
-    
     public void addLayer(int weight) {
         if (layers.keySet().stream().anyMatch((a) -> a == weight)) {
             throw new IllegalArgumentException("There is already a layer with weight " + weight);
@@ -45,9 +51,9 @@ public class Pyramid implements PlayableContainer {
      * @return Shallow copy av liste over {@code PyramidLayer}
      */
     protected Map<Integer, PyramidLayer> getLayers() {
+        // TODO Prøv å finne en bedre måte å løse dette på.
         return Map.copyOf(layers);
     }
-
 
     public PyramidLayer getLayer(int weight) {
         return layers.get(weight);
@@ -61,7 +67,8 @@ public class Pyramid implements PlayableContainer {
             throw new IllegalArgumentException("No layer with weight " + weight);
         }
 
-        // Hvis man prøver å fjerne det nederste nivået, flytter man sangene oppover, ellers: nedover.
+        // Hvis man prøver å fjerne det nederste nivået, flytter man sangene oppover,
+        // ellers: nedover.
         List<Integer> weights = getSortedWeights();
         if (weights.get(weights.size() - 1) == weight) {
             int layerAboveWeight = weights.get(weights.size() - 2);
@@ -75,12 +82,44 @@ public class Pyramid implements PlayableContainer {
     }
 
     // public void removeLayer(PyramidLayer layer) {
-    //     if (!layers.contains(layer)) {
-    //         throw new IllegalArgumentException("Layer " + layer + " not in this pyramid");
-    //     }
-    //     layers.remove(layer);
+    // if (!layers.contains(layer)) {
+    // throw new IllegalArgumentException("Layer " + layer + " not in this
+    // pyramid");
+    // }
+    // layers.remove(layer);
     // }
 
+    /**
+     * Legger til {@code playable} til det laveste nivået.
+     * 
+     * @param playable
+     */
+    public void addPlayable(Playable playable) {
+        List<Integer> weights = getSortedWeights();
+        layers.get(weights.get(layers.size() - 1)).add(playable);
+    }
+
+    public void movePlayable(Playable playable, PyramidLayer from, PyramidLayer to) {
+        if (!from.contains(playable)) {
+            throw new IllegalArgumentException("Playable " + playable + " is not in layer " + from);
+        }
+        from.remove(playable);
+        to.add(playable);
+    }
+
+    public void promotePlayable(Playable playable, PyramidLayer from) {
+        List<Integer> weights = getSortedWeights();
+        if (layers.get(weights.get(0)) == from) {
+            throw new IllegalStateException("Cannot promote playable " + playable + ". Already at top layer");
+        }
+        int fromLayerWeight = layers.entrySet().stream().filter((a) -> a.getValue().equals(from)).map(Map.Entry::getKey).findFirst().get(); 
+        int layerAboveWeight = weights.get(weights.indexOf(fromLayerWeight) - 1);
+        movePlayable(playable, from, layers.get(layerAboveWeight));
+    }
+
+    public int getTotalLayerWeight() {
+        return layers.entrySet().stream().mapToInt((a) -> a.getKey()).sum();
+    }
 
     @Override
     public Iterator<Playable> iterator() {
@@ -98,5 +137,22 @@ public class Pyramid implements PlayableContainer {
     public double getTotalPlayTime() {
         return layers.entrySet().stream().mapToDouble((a) -> a.getValue().getTotalPlayTime()).sum();
     }
-    
+
+    public static void main(String[] args) {
+        Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
+        Song detErJoBareKodd = new Song("Det er jo bare kødd - Album edition", "Klossmajor", "Alt jeg ikke har", null,
+                178);
+        Song hollywood = new Song("Hollywood", "Cezinando", "Et godt stup i et grunt vann", new GregorianCalendar(2020, 2, 23), 400);
+
+        Pyramid pyramidi = new Pyramid();
+        pyramidi.addLayer(20);
+        pyramidi.addPlayable(hollywood);
+        pyramidi.addPlayable(hollywood);
+        pyramidi.addPlayable(hollywood);
+        pyramidi.addPlayable(phadThai);
+        pyramidi.addPlayable(detErJoBareKodd);
+        pyramidi.promotePlayable(hollywood, pyramidi.getLayer(0));
+        pyramidi.promotePlayable(phadThai, pyramidi.getLayer(0));
+        System.out.println(pyramidi);
+    }
 }

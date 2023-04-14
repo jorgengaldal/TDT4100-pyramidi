@@ -7,22 +7,10 @@ import java.util.List;
 public class PyramidLayer implements Iterable<Playable> {
 
     private List<Playable> contents;
-    // private int weight;
-    // TODO (Egt NOTE): Fjerner weight siden layeret ikke trenger å vite om sin egen vekt.
 
-    public PyramidLayer(/*int weight*/) {
-        // setWeight(weight);
-
+    public PyramidLayer() {
         contents = new ArrayList<>();
     }
-
-    // private void setWeight(int weight) {
-    //     this.weight = weight;
-    // }
-
-    // public int getWeight() {
-    //     return weight;
-    // }
 
     public int size() {
         return contents.size();
@@ -44,6 +32,10 @@ public class PyramidLayer implements Iterable<Playable> {
         contents.add(playable);
     }
 
+    public boolean contains(Playable playable) {
+        return contents.contains(playable);
+    }
+
     public void addAll(List<Playable> playables) {
         for (Playable playable : playables) {
             add(playable);
@@ -58,7 +50,7 @@ public class PyramidLayer implements Iterable<Playable> {
 
     @Override
     public Iterator<Playable> iterator() {
-        // TODO Returner PyramidLayerIterator
+        // TODO Returner PyramidLayerPlayableIterator
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'iterator'");
     }

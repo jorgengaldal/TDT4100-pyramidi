@@ -12,5 +12,9 @@ public interface Playable {
 
     public double getDuration();
 
+    public String getDisplayedDuration();
+
     public String getTitle();
+
+    public String getDisplayedArtist();
 }

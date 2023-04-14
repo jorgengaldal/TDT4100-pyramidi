@@ -87,6 +87,10 @@ Dette er en klasse som inneholder lag, som hver inneholder sanger (eller `Playab
 
 - `public void removeLayer(PyramidLayer layer)` - Fjerner et lag fra pyramiden. Alle sangene faller ned til laget under.
 
+- `public void movePlayable(Playable playable, PyramidLayer from, PyramidLayer to)` - flytter `playable` fra nivå `from` til `to`
+
+- `public void promotePlayable(Playable playable, PyramidLayer from)` - flytter `playable` fra nivå `from` til et nivå høyere.
+
 <!-- - `public Playable getNextPlayable()` - Gir neste `Playable` som skal spilles, basert på vektene gitt av `PyramidLayer`. 
 Merk: Denne blir vel heller implementert i PyramidLayerIterator -->
 
@@ -100,7 +104,7 @@ Merk: Denne blir vel heller implementert i PyramidLayerIterator -->
 
 - *Fra `Iterable`*: `hasNext()` -->
 
-- *Fra `Iterable`*: `iterator():`
+- *Fra `Iterable`*: `public Iterator<Playable> iterator()` - Implementasjonen returnerer en PyramidPlayableIterator av seg selv.
 
 - *Fra `PlayableContainer`*: `public int getTotalPlayablesNumber()`
 
