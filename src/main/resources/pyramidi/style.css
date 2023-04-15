@@ -13,6 +13,14 @@
     -fx-background-color: #444;
 }
 
+.list-view .list-cell {
+    -fx-text-fill: #FFF;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #855d9ea8;
+}
+
 .player {
     background-color: #A25BCF;
     -fx-background-color: #A25BCF;

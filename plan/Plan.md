@@ -2,6 +2,8 @@
 
 **Appnavn:** Pyramidi (stilisert *pyramidi*)
 
+TODO: Oppdater slik at dette dokumentet samsvarer.
+
 ## Synopsis
 
 *pyramidi* er en musikkapplikasjon for å organisere musikk i en pyramideformet struktur hvor hver sang kan være i et nivå i spillelisten. 

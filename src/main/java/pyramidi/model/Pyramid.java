@@ -117,6 +117,29 @@ public class Pyramid implements PlayableContainer {
         movePlayable(playable, from, layers.get(layerAboveWeight));
     }
 
+    public void demotePlayable(Playable playable, PyramidLayer from) {
+        List<Integer> weights = getSortedWeights();
+        if (layers.get(weights.get(weights.size() - 1)) == from) {
+            throw new IllegalStateException("Cannot demote playable " + playable + ". Already at bottom layer");
+        }
+        int fromLayerWeight = layers.entrySet().stream().filter((a) -> a.getValue().equals(from)).map(Map.Entry::getKey).findFirst().get(); 
+        int layerBelowWeight = weights.get(weights.indexOf(fromLayerWeight) + 1);
+        movePlayable(playable, from, layers.get(layerBelowWeight));
+    }
+
+    public PyramidLayer getTopLayer() {
+        return getLayer(getSortedWeights().get(0));
+    }
+
+    public PyramidLayer getBottomLayer() {
+        List<Integer> sortedWeights = getSortedWeights();
+        return getLayer(sortedWeights.get(sortedWeights.size() - 1));
+    }
+
+    public boolean containsLayer(int weight) {
+        return layers.keySet().contains(weight);
+    }
+
     public int getTotalLayerWeight() {
         return layers.entrySet().stream().mapToInt((a) -> a.getKey()).sum();
     }
