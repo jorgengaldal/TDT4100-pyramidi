@@ -70,8 +70,6 @@ public class pyramidiController {
         addLayerButton.setDisable(true);
         removeLayerButton.setDisable(true);
 
-        // TODO: Fix/prevent 'No Playable in iterator' on empty skip
-
         this.pyramide.getSelectionModel().selectedItemProperty().addListener((property, oldValue, newValue) -> {
             updateLagView(newValue);
         });
@@ -142,13 +140,13 @@ public class pyramidiController {
     @FXML
     void skip() {
         if (pyramid.getTotalPlayablesNumber() == 0) {
-            
             tittel.setText("[Ingen tilgjengelig]");
             artist.setText("");
             tid.setText("mm:ss");
             album.setText("");
-            updatePlayer();
+            return;
         }
+        
         player.next();
         updatePlayer();
     }
