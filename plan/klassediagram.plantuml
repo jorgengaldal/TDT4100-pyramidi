@@ -12,26 +12,39 @@ interface PlayableContainer
 
 class PyramidLayer {
     ' extends PlayableContainer?
-    List<Playable> contents
+    ' List<Playable> contents
 }
 
 class Pyramid implements PlayableContainer {
-    List<PyramidLayer> layers
+    ' List<PyramidLayer> layers
 
-    Song getNextSong()
+    ' Song getNextSong()
 }
 
 class Player {
-    Playable currentPlayable
+    ' Playable currentPlayable
     
 
-    void next()
+    ' void next()
 }
+
+class PyramidLayerIterator
+
+class PyramidLayerPlayableIterator
+
+class PyramidPlayableIterator
+
+class PlayablesLibrary
+
 
 Pyramid --> PyramidLayer : "layers"
 PyramidLayer --> Playable : "contents"
 Player --> Playable : "currentPlayable"
 Player --> PlayableContainer : "currentPlayableContainer"
+PyramidPlayableIterator --> PyramidLayerPlayableIterator : "iterators"
+PyramidLayerPlayableIterator --> PyramidLayer : "layer"
+PyramidLayerIterator --> Pyramid : "pyramid"
+PlayablesLibrary --> Playable : "playables"
 
 
 @enduml
