@@ -136,8 +136,7 @@ public class Song implements Playable {
             published.setTime(df.parse(publishedString));
         }
 
-
-        return new Song(artist, album, songFields.get(2), published, duration);
+        return new Song(title, artist, album, published, duration);
     }
 
     public void saveToFile(String path) throws IOException {
