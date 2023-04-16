@@ -60,7 +60,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="add" mnemonicParsing="false" style="-fx-background-color: #A25BCF;" text="&lt;" textFill="WHITE">
+                        <Button fx:id="add" mnemonicParsing="false" onAction="#handleAddPlayableToLayer" style="-fx-background-color: #A25BCF;" text="&lt;" textFill="WHITE">
                            <font>
                               <Font name="Arial Nova Bold" size="16.0" />
                            </font>

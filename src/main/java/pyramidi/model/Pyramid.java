@@ -175,10 +175,16 @@ public class Pyramid implements PlayableContainer {
         Pyramid result = new Pyramid();
         for (String line : lines) {
             String[] split = line.split(":");
+
             int weight = Integer.parseInt(split[0]);
             
             if (weight != 1) {
                 result.addLayer(weight);
+            }
+
+            if (split.length != 2) {
+                // Unngår forsøk på å legge til sangene om det ikke er noe på det nivået.
+                continue;
             }
 
             for (String statePath : split[1].split(";")) {
@@ -187,7 +193,7 @@ public class Pyramid implements PlayableContainer {
         }
 
         // Fjerner nivå 1, om det ikke brukt, da det blir standardopprettet i en new Pyramid()
-        if (result.getLayer(1).size() == 0) {
+        if (result.getLayer(1).size() == 0 && result.getTotalPlayablesNumber() != 0) {
             result.removeLayer(1);
         }
 

@@ -29,9 +29,10 @@ public class Player {
 
     public void next() {
         if (!iterator.hasNext()) {
-            throw new IllegalStateException("No Playable in iterator");
+            setCurrentPlayable(null);
+        } else {
+            setCurrentPlayable(iterator.next());
         }
-        setCurrentPlayable(iterator.next());
     }
 
     public static void main(String[] args) {

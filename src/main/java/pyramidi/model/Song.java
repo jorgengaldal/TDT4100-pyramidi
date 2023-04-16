@@ -143,7 +143,12 @@ public class Song implements Playable {
         // String file = Song.class.getResource(path).getFile();
 
         List<String> songFields = new ArrayList<>();
-        songFields.addAll(List.of(getTitle(), getArtist(), getAlbum(), getDisplayedPublishDate(), String.valueOf(getDuration())));
+        songFields.add(getTitle());
+        songFields.add(getDisplayedArtist());
+        songFields.add(getDisplayedAlbum());
+        songFields.add(getDisplayedPublishDate());
+        songFields.add(String.valueOf(getDuration()));
+        // songFields.addAll(List.of(getTitle(), getArtist(), getAlbum(), getDisplayedPublishDate(), String.valueOf(getDuration())));
         FileHelper.writeLines(path, songFields);
         
     }
@@ -216,25 +221,44 @@ public class Song implements Playable {
 
 
     public static void main(String[] args) {
+        // try {
+        //     Song fileTest = Song.loadFromFile("state/playables/hollywood.play");
+        //     System.out.println(fileTest.getDisplayedPublishDate());
+        //     fileTest.saveToFile("state/playables/hollywoody2.play");
+
+        //     Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
+        //     phadThai.saveState();
+        //     Song phadThai2 = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
+
+
+        //     Song newPhad = Song.loadFromFile(phadThai2.getStatePath());
+        //     System.out.println(newPhad);
+
+        // } catch (ParseException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
+        // } catch (IOException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
+        // }
+
+        Song letitgo = new Song("Let it go", "Oluf", "Dansehits 3", null, 243);
+        Song dansdansdans = new Song("Dans dans dans", "Odd Norstoga", "Fattig ferdamann", null, 27);
+        Song keen = new Song("Keen", "brenn.", "Keen", null, 170);
+        Song pepas = new Song("Pepas", "Farruko", "La 167", null, 287);
+        Song uro = new Song("Uro", "Michelle Ullestad", "Uro", null, 192);
+        Song ikissed = new Song("I Kissed a Girl", null, null, null, 180);
         try {
-            Song fileTest = Song.loadFromFile("state/playables/hollywood.play");
-            System.out.println(fileTest.getDisplayedPublishDate());
-            fileTest.saveToFile("state/playables/hollywoody2.play");
-
-            Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
-            phadThai.saveState();
-            Song phadThai2 = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
-
-
-            Song newPhad = Song.loadFromFile(phadThai2.getStatePath());
-            System.out.println(newPhad);
-
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            letitgo.saveState();
+            dansdansdans.saveState();
+            keen.saveState();
+            pepas.saveState();
+            uro.saveState();
+            ikissed.saveState();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
     }
 }
