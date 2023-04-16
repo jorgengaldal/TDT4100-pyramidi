@@ -2,7 +2,6 @@ package pyramidi.model;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,8 +13,6 @@ import java.util.Map.Entry;
 public class PyramidPlayableIterator implements Iterator<Playable> {
 
     // TODO: Implementer dithering og mer randomness
-    // TODO/NOTE: Den velger nå bare hvert nivå hver x-te gang, ikke basert på
-    // antall sanger.
 
     private Pyramid pyramid;
     private Map<Integer, Integer> intervals;
@@ -141,10 +138,8 @@ public class PyramidPlayableIterator implements Iterator<Playable> {
                 }
             }
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

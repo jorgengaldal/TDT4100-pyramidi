@@ -212,6 +212,31 @@ public class Pyramid implements PlayableContainer {
         FileHelper.writeLines(path, lines);
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((layers == null) ? 0 : layers.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Pyramid other = (Pyramid) obj;
+        if (layers == null) {
+            if (other.layers != null)
+                return false;
+        } else if (!layers.equals(other.layers))
+            return false;
+        return true;
+    }
+
     public static void main(String[] args) {
         Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
         Song detErJoBareKodd = new Song("Det er jo bare kødd - Album edition", "Klossmajor", "Alt jeg ikke har", null,

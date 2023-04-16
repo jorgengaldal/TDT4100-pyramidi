@@ -2,14 +2,15 @@ package pyramidi;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.GregorianCalendar;
 import java.util.function.UnaryOperator;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import pyramidi.model.Playable;
 import pyramidi.model.PlayablesLibrary;
@@ -20,8 +21,8 @@ import pyramidi.model.Song;
 
 public class pyramidiController {
 
-    // TODO: Fix sånn at player er synkronisert ved endring i hvilke layers som er.
     // TODO: Sammensett alle update-funksjonene til én
+    // TODO: Lag bedre error-meldinger.
     
     private static final String STATEPATH = "state/minesanger.pyra";
     @FXML private Text tittel;
@@ -47,21 +48,6 @@ public class pyramidiController {
     private Player player;
     private PlayablesLibrary library;
 
-    private void addPlaceholderSongs() {
-        Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
-        Song detErJoBareKodd = new Song("Det er jo bare kødd - Album edition", "Klossmajor", "Alt jeg ikke har", null,
-                178);
-        Song hollywood = new Song("Hollywood", "Cezinando", "Et godt stup i et grunt vann", new GregorianCalendar(2020, 2, 23), 400);
-
-        pyramid.addPlayable(hollywood);
-        pyramid.addPlayable(detErJoBareKodd);
-        pyramid.addPlayable(phadThai);
-
-        pyramid.addLayer(2);
-        pyramid.addPlayable(hollywood);
-        pyramid.promotePlayable(hollywood, pyramid.getLayer(1));
-    }
-
     void loadState() throws ParseException, IOException {
         this.pyramid = Pyramid.loadFromFile("state/minesanger.pyra");
         this.library = new PlayablesLibrary();
@@ -72,12 +58,11 @@ public class pyramidiController {
     void initialize() {
         try {
             loadState();
-            // TODO Lag ordentlige warnings her.
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
+            errorDialog("Det har skjedd en feil med håndtering av filnavn");
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            errorDialog("Klarer ikke å lese tilstand fra fil");
             e.printStackTrace();
         }
         this.player = new Player(pyramid);
@@ -92,7 +77,7 @@ public class pyramidiController {
 
         this.pyramide.getSelectionModel().selectedItemProperty().addListener((property, oldValue, newValue) -> {
             updateLagView(newValue);
-            add.setDisable(newValue == null || getSelectedLayer() == null);
+            add.setDisable(this.bibliotek.getSelectionModel().getSelectedItem() == null || newValue == null);
         });
 
         this.lag.getSelectionModel().selectedItemProperty().addListener((property, oldValue, newValue) -> {
@@ -210,10 +195,15 @@ public class pyramidiController {
         try {
             pyramid.saveToFile(pyramidiController.STATEPATH);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            // TODO Håndter
+            errorDialog("Klarer ikke å lagre tilstand til fil.");
             e.printStackTrace();
         }
+    }
+
+    private void errorDialog(String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

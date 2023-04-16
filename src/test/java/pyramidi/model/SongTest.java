@@ -3,6 +3,8 @@ package pyramidi.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -31,6 +33,22 @@ public class SongTest {
         // TODO: Test om artist, album og publishdate gir ukjent
     }
 
+    @DisplayName("Tester konstruktør med tittel lik null")
+    @Test
+    public void testConstructorWithNullTitle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Song(null, null, null, null, 0);
+        });
+    }
+
+    @DisplayName("Tester konstruktør med negativ tid")
+    @Test
+    public void testConstructorWithNegativeDuration() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Song("Dans på bordet", null, null, null, -2.4);
+        });
+    }
+
     @DisplayName("Tester konstruktør med alt satt til lovlige verdier samt Displayed-gettersene")
     @Test
     public void testConstructorWithValidArgumentsAndDisplayedMethods() {
@@ -42,8 +60,17 @@ public class SongTest {
         assertEquals("3:27", laxx.getDisplayedDuration());
         assertEquals("05.12.2019", laxx.getDisplayedPublishDate());
     }
-}
 
-// Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", null, 211);
-// Song detErJoBareKodd = new Song("Det er jo bare kødd - Album edition", "Klossmajor", "Alt jeg ikke har", null, 178);
-// Song hollywood = new Song("", "Klossmajor", "Alt jeg ikke har", null, 178);
+    @DisplayName("Tester at lagring og henting fra fil gir samme sang")
+    @Test
+    public void testLoadFromFileEqualsSavedToFileSong() throws IOException, ParseException {
+        Song laxx = new Song("Laxx", "Tim Ayre", "Laxx", new GregorianCalendar(2019, 11, 5) , 207);
+        laxx.saveState();
+
+        Song expectedLaxx = Song.loadFromFile(laxx.getStatePath());
+
+        assertEquals(laxx, expectedLaxx);
+    }
+
+
+}
