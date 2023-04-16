@@ -153,14 +153,18 @@ public class pyramidiController {
 
     @FXML
     void handleRemoveLayer() {
-        pyramid.removeLayer(getLayerManagementFieldValue());
-        updatePyramideView();
-        updateLayerManagementButtons(true);
-        layerManagementField.setText("");
-        String newLayerWeight = String.valueOf(pyramid.getSortedWeights().get(0));
-        pyramide.getSelectionModel().select(newLayerWeight);
-        updateLagView(newLayerWeight);
-        saveState();
+        try {
+            pyramid.removeLayer(getLayerManagementFieldValue());
+            updatePyramideView();
+            updateLayerManagementButtons(true);
+            layerManagementField.setText("");
+            String newLayerWeight = String.valueOf(pyramid.getSortedWeights().get(0));
+            pyramide.getSelectionModel().select(newLayerWeight);
+            updateLagView(newLayerWeight);
+            saveState();
+        } catch (IllegalStateException e) {
+            errorDialog("Du må ha minst ett lag i pyramiden");
+        }
 
     }
 
