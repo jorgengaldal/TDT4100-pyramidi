@@ -1,17 +1,28 @@
 package pyramidi.model;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import pyramidi.util.FileHelper;
 
 public class Pyramid implements PlayableContainer {
 
-    /* TODO: Legg til mulighet for å enkelt endre vekt til et lag uten å måtte lage et nytt
-     * TODO: Bytt over til TreeMap for å unngå å måtte sortere så weights så mange ganger
+    /*
+     * TODO: Legg til mulighet for å enkelt endre vekt til et lag uten å måtte lage
+     * et nytt
+     * TODO: Bytt over til TreeMap for å unngå å måtte sortere så weights så mange
+     * ganger
      */
 
     private Map<Integer, PyramidLayer> layers;
@@ -112,7 +123,8 @@ public class Pyramid implements PlayableContainer {
         if (layers.get(weights.get(0)) == from) {
             throw new IllegalStateException("Cannot promote playable " + playable + ". Already at top layer");
         }
-        int fromLayerWeight = layers.entrySet().stream().filter((a) -> a.getValue().equals(from)).map(Map.Entry::getKey).findFirst().get(); 
+        int fromLayerWeight = layers.entrySet().stream().filter((a) -> a.getValue().equals(from)).map(Map.Entry::getKey)
+                .findFirst().get();
         int layerAboveWeight = weights.get(weights.indexOf(fromLayerWeight) - 1);
         movePlayable(playable, from, layers.get(layerAboveWeight));
     }
@@ -122,7 +134,8 @@ public class Pyramid implements PlayableContainer {
         if (layers.get(weights.get(weights.size() - 1)) == from) {
             throw new IllegalStateException("Cannot demote playable " + playable + ". Already at bottom layer");
         }
-        int fromLayerWeight = layers.entrySet().stream().filter((a) -> a.getValue().equals(from)).map(Map.Entry::getKey).findFirst().get(); 
+        int fromLayerWeight = layers.entrySet().stream().filter((a) -> a.getValue().equals(from)).map(Map.Entry::getKey)
+                .findFirst().get();
         int layerBelowWeight = weights.get(weights.indexOf(fromLayerWeight) + 1);
         movePlayable(playable, from, layers.get(layerBelowWeight));
     }
@@ -159,11 +172,49 @@ public class Pyramid implements PlayableContainer {
         return layers.entrySet().stream().mapToDouble((a) -> a.getValue().getTotalPlayTime()).sum();
     }
 
+    public static Pyramid loadFromFile(String path) throws ParseException, IOException {
+        List<String> lines = FileHelper.readLines(path, false);
+
+        Pyramid result = new Pyramid();
+        for (String line : lines) {
+            String[] split = line.split(":");
+            int weight = Integer.parseInt(split[0]);
+            
+            if (weight != 1) {
+                result.addLayer(weight);
+            }
+
+            for (String statePath : split[1].split(";")) {
+                result.getLayer(weight).add(Song.loadFromFile(statePath));
+            }
+        }
+
+        // Fjerner nivå 1, om det ikke brukt, da det blir standardopprettet i en new Pyramid()
+        if (result.getLayer(1).size() == 0) {
+            result.removeLayer(1);
+        }
+
+        return result;
+    }
+
+    public void saveToFile(String path) throws IOException {
+        List<String> lines = new ArrayList<>();
+        for (Entry<Integer, PyramidLayer> entrySet : layers.entrySet()) {
+            String line = entrySet.getKey() + ":"
+                    + String.join(";", entrySet.getValue().getContents().stream().map(Playable::getStatePath).toList());
+            lines.add(line);
+        }
+        ;
+
+        FileHelper.writeLines(path, lines);
+    }
+
     public static void main(String[] args) {
         Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
         Song detErJoBareKodd = new Song("Det er jo bare kødd - Album edition", "Klossmajor", "Alt jeg ikke har", null,
                 178);
-        Song hollywood = new Song("Hollywood", "Cezinando", "Et godt stup i et grunt vann", new GregorianCalendar(2020, 2, 23), 400);
+        Song hollywood = new Song("Hollywood", "Cezinando", "Et godt stup i et grunt vann",
+                new GregorianCalendar(2020, 2, 23), 400);
 
         Pyramid pyramidi = new Pyramid();
         pyramidi.addLayer(20);
@@ -172,8 +223,24 @@ public class Pyramid implements PlayableContainer {
         pyramidi.addPlayable(hollywood);
         pyramidi.addPlayable(phadThai);
         pyramidi.addPlayable(detErJoBareKodd);
-        pyramidi.promotePlayable(hollywood, pyramidi.getLayer(0));
-        pyramidi.promotePlayable(phadThai, pyramidi.getLayer(0));
+        pyramidi.promotePlayable(hollywood, pyramidi.getLayer(1));
+        pyramidi.promotePlayable(phadThai, pyramidi.getLayer(1));
         System.out.println(pyramidi);
+
+        try {
+            phadThai.saveState();
+            hollywood.saveState();
+            detErJoBareKodd.saveState();
+            pyramidi.saveToFile("state/minesanger.pyra");
+            Pyramid test = Pyramid.loadFromFile("state/minesanger.pyra");
+            test.saveToFile("state/minesanger2.pyra");
+            
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,15 @@
 package pyramidi.model;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import pyramidi.util.FileHelper;
 
 public class Song implements Playable {
 
@@ -101,14 +110,52 @@ public class Song implements Playable {
 
     }
 
-    public static Song loadFromFile(String path) {
-        // TODO: Implement
-        return new Song(null, null, null, null, 0.5);
+    public static Song loadFromFile(String path) throws ParseException, IOException {
+        List<String> songFields = FileHelper.readLines(path, false);
+
+        String title = songFields.get(0);
+        String artist = songFields.get(1);
+        String album = songFields.get(2);
+        String publishedString = songFields.get(3);
+        double duration = Double.parseDouble(songFields.get(4));
+
+        // Tar hånd om ukjente verdier og setter dem til null.
+        if (artist.equals("Ukjent artist")) {
+            artist = null;
+        }
+        if (album.equals("Ukjent album")) {
+            album = null;
+        }
+        Calendar published;
+        if (publishedString.equals("Ukjent publiseringsdato")) {
+            published = null;
+        } else {
+            // Sakset fra https://stackoverflow.com/questions/2331513/convert-a-string-to-a-gregoriancalendar
+            DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+            published = new GregorianCalendar();
+            published.setTime(df.parse(publishedString));
+        }
+
+
+        return new Song(artist, album, songFields.get(2), published, duration);
     }
 
-    public void saveToFile(String path) {
-        // TODO: Implement
-    } 
+    public void saveToFile(String path) throws IOException {
+        // String file = Song.class.getResource(path).getFile();
+
+        List<String> songFields = new ArrayList<>();
+        songFields.addAll(List.of(getTitle(), getArtist(), getAlbum(), getDisplayedPublishDate(), String.valueOf(getDuration())));
+        FileHelper.writeLines(path, songFields);
+        
+    }
+
+    public String getStatePath() {
+        return "state/playables/" + hashCode() + ".play";
+    }
+
+    public void saveState() throws IOException {
+        saveToFile(getStatePath());
+    }
 
     @Override
     public String toString() {
@@ -116,8 +163,79 @@ public class Song implements Playable {
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + ((artist == null) ? 0 : artist.hashCode());
+        result = prime * result + ((album == null) ? 0 : album.hashCode());
+        result = prime * result + ((publishDate == null) ? 0 : publishDate.hashCode());
+        long temp;
+        temp = Double.doubleToLongBits(duration);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Song other = (Song) obj;
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        if (artist == null) {
+            if (other.artist != null)
+                return false;
+        } else if (!artist.equals(other.artist))
+            return false;
+        if (album == null) {
+            if (other.album != null)
+                return false;
+        } else if (!album.equals(other.album))
+            return false;
+        if (publishDate == null) {
+            if (other.publishDate != null)
+                return false;
+        } else if (!publishDate.equals(other.publishDate))
+            return false;
+        if (Double.doubleToLongBits(duration) != Double.doubleToLongBits(other.duration))
+            return false;
+        return true;
+    }
+
+    @Override
     public void play() {
         System.out.println("Playing " + this.getTitle());
     }
 
+
+    public static void main(String[] args) {
+        try {
+            Song fileTest = Song.loadFromFile("state/playables/hollywood.play");
+            System.out.println(fileTest.getDisplayedPublishDate());
+            fileTest.saveToFile("state/playables/hollywoody2.play");
+
+            Song phadThai = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
+            phadThai.saveState();
+            Song phadThai2 = new Song("Phad Thai", "Klossmajor", "Klossmajor", new GregorianCalendar(2019, 11, 5), 211);
+
+
+            Song newPhad = Song.loadFromFile(phadThai2.getStatePath());
+            System.out.println(newPhad);
+
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

@@ -18,4 +18,6 @@ public interface Playable {
 
     public String getDisplayedArtist();
 
+    public String getStatePath();
+
 }
