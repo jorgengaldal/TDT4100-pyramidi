@@ -13,7 +13,6 @@ import pyramidi.model.Playable;
 import pyramidi.model.Player;
 import pyramidi.model.Pyramid;
 import pyramidi.model.PyramidLayer;
-import pyramidi.model.PyramidLayerIterator;
 import pyramidi.model.Song;
 
 public class pyramidiController {
